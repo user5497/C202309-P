@@ -1,8 +1,8 @@
 #include <stdio.h>
-
 // 지출 관리 자동화 프로젝트 
 
-// 17일까지: 1. 카테고리 편집 기능, 2. 당월 예산 저장 기능 
+// 28일정도까지: 지출 분석 기능 - 소비 금액 계산 기능. 
+// 각 예산별 사용 금액과 총 소비액을 제시. (소비 금액 입력받는 기능. )
 
 // 1. 카테고리 편집 기능에 추가/ 편집도 넣기. (나중에 시간 남으면 )
 
@@ -11,57 +11,73 @@ void SaveExpenditure(); // 지출 저장 기능.
 
 char category_names[50][10] = { "식비", "취미", "의료", "교통", "교육", "생활", "이체", "기타" }; // 카테고리의 이름을 저장할 배열 
 int category_count = 7; // 카테고리 수를 저장
-int budget[50] = {0}; // 예산 금액을 저장. 
-int essential_ex[50] = {0}; // 필수 지출 금액 따로 저장. 
+int budget[50] = { 0 }; // 예산 금액을 저장. 
+int essential_ex[50] = { 0 }; // 필수 지출 금액 따로 저장. 
+
 
 int main() {
 	// 1. 예산 설정. 
 	printf("각 카테고리에 예산을 할당해 주세요. \n");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
-		scanf_s("%d", &budget[i]);
+		while (1) { // 음수 제외
+			scanf_s("%d", &budget[i]);
+			if (budget[i] < 0) {
+				printf("음수는 저장할 수 없습니다. 다시 입력해 주세요. ");
+				continue;
+			}
+			else {
+				break;
+			}
+		}
 	}
 	printf("\n");
 
-	// 테스트 - 오류 발생 중 
-	for (int i = 0; i < category_count; i++) {
-		printf("%d %d ", i + 1, budget[i]);
-	}
+	// 테스트 
+	//for (int i = 0; i < category_count; i++) {
+		//printf("%d %d ", i + 1, budget[i]);
+	//}
 	
 
 
 	printf("발생할 필수 지출을 입력해주세요. ");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
-		scanf_s("%d", &essential_ex[i]);
-		if (essential_ex[i] != 0) {
+		while (1) {
+			scanf_s("%d", &essential_ex[i]);
 			if (budget[i] < essential_ex[i]) {
 				printf("설정된 예산보다 지출이 더 큽니다. 다시 입력해 주세요. ");
-				// 구현 필요 
-
-
+				continue;
 			}
-			else {
+			else if (essential_ex < 0) {
+				printf("음수는 입력할 수 없습니다. 다시 입력해 주세요. ");
+				continue;
+			}
+			else { // 범위 내의 필수 지출일 때만 저장. 
 				budget[i] = budget[i] - essential_ex[i];
+				break;
 			}
 		}
 	}
 	printf("예산 할당이 완료되었습니다. \n");
 
 	// 할당 완료 테스트용 출력
-	for (int i = 0; i < category_count; i++) {
-		printf("%s %d", category_names[i], budget[i]);
-	}
+	//for (int i = 0; i < category_count; i++) {
+		//printf("%s %d ", category_names[i], budget[i]);
+	//}
 	
 
 	// 할 일 선택 
 	while (1) {
 		int choice; 
+		// 종료 버튼을 선택하는 순간 달의 끝으로 여기고 분석 시작. 
+		// 파일 생성 기능 같은 거 배우면 달의 종료를 선택할 수 있고, 중간중간에 세이브하도록 개선하기. 
 		printf("원하는 기능을 선택해 주세요. (1. 지출 추가, 2. 카테고리 편집, 3. 종료): ");
 		scanf_s("%d", &choice);
 		if (choice == 1) {
 			printf("지출 항목을 추가합니다. \n");
 			SaveExpenditure();
+			
 		}
 
 		else if (choice == 2) {
@@ -71,6 +87,7 @@ int main() {
 
 		else if (choice == 3) {
 			printf("프로그램을 종료합니다. \n");
+			// 분석을 시작합니다. 
 			break;
 		}
 
@@ -84,8 +101,18 @@ int main() {
 
 
 void SaveExpenditure() {
-	int expenditure[50][10]; // 지출을 저장할 배열 
-	printf("지출이 발생한 카테고리와 금액을 입력해 주세요. ");
+	int expenditure[50]; // 지출을 저장할 배열 
+	char ex_cate; // 지출 발생 카테고리 
+	
+
+	printf("지출이 발생한 카테고리를 입력해 주세요. ");
+	scanf_s("%s", &ex_cate, (int)sizeof(ex_cate));
+	// 없는 카테고리 입력받은 경우 제외하기 
+
+	
+	// 지출 금액 입력받고 해당 카테고리 예산에서 마이너스
+	// 발생하고 있는 지출의 총액도 저장해야 함. 
+	
 }
 
 
@@ -110,7 +137,7 @@ void EditCategory() {
 				printf("삭제를 원하는 카테고리의 번호를 선택해주세요.\n");
 				scanf_s("%d", &del_category);
 				
-				// 예산이 할당된 금액 제거 금지
+				// 예산이 할당된 카테고리 제거 금지
 				if (budget[del_category] != 0) {
 					printf("해당 카테고리에 할당된 예산이 존재합니다. ");
 					break;
