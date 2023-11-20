@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h> // strcmp
 // 지출 관리 자동화 프로젝트 
 
 // 28일정도까지: 지출 분석 기능 - 소비 금액 계산 기능. 
@@ -102,16 +103,45 @@ int main() {
 
 void SaveExpenditure() {
 	int expenditure[50]; // 지출을 저장할 배열 
-	char ex_cate; // 지출 발생 카테고리 
-	
+	char input_cate[1][10]; // 지출 발생 카테고리 
+	int valid_cate = 0; // 카테고리 존재 확인 용도
+	int index_cate; // 입력받은 값의 위치 확인 
+
 
 	printf("지출이 발생한 카테고리를 입력해 주세요. ");
-	scanf_s("%s", &ex_cate, (int)sizeof(ex_cate));
-	// 없는 카테고리 입력받은 경우 제외하기 
-
+	while (valid_cate != 1) {
+		scanf_s("%s", &input_cate, (int)sizeof(input_cate));
+		for (int i = 0; i < category_count; i++) {
+			if (strcmp(input_cate, category_names[i]) == 0) {
+				index_cate = i;
+				valid_cate = 1;
+			}
+		}
+		if (valid_cate != 1) { // 없는 카테고리 입력받는 경우 제외 
+			printf("존재하지 않는 카테고리입니다. 다시 입력해 주세요.");
+			continue;
+		}
+	}
 	
+	
+
 	// 지출 금액 입력받고 해당 카테고리 예산에서 마이너스
 	// 발생하고 있는 지출의 총액도 저장해야 함. 
+
+	int total_expenditure[50]; // 카테고리별 지출 총액 
+	int new_expenditure[50]; // 새로 발생하는 지출
+
+	printf("지출 발생 금액을 입력해 주세요. ");
+	while (1) {
+		scanf_s("%d ", &new_expenditure);
+		if (new_expenditure <= 0) { // 음수, 0 제외 
+			printf("발생한 지출을 입력해 주세요.");
+		}
+		else {
+			
+		}
+		
+	}
 	
 }
 
