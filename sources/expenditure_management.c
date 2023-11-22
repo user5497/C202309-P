@@ -1,23 +1,34 @@
 #include <stdio.h>
 #include <string.h> // strcmp
-// 지출 관리 자동화 프로젝트 
+#include <stdlib.h> // 동적 메모리용
+
+// 지출 관리 자동화 프로젝트 // 
+
 
 // 28일정도까지: 지출 분석 기능 - 소비 금액 계산 기능. 
 // 각 예산별 사용 금액과 총 소비액을 제시. (소비 금액 입력받는 기능. )
 
+// 대대적으로 포인터 변환 작업 하기. 
+// 포인터를 쓰기 좋은 순간. 1. 함수 호출로 값 변경. 2. 동적 메모리 할당. 
+// ~ 24일 배열 동적 메모리로 전환하기. 
+
 // 1. 카테고리 편집 기능에 추가/ 편집도 넣기. (나중에 시간 남으면 )
 
-void EditCategory(); // 카테고리 편집 기능. 
-void SaveExpenditure(); // 지출 저장 기능. 
 
-char category_names[50][10] = { "식비", "취미", "의료", "교통", "교육", "생활", "이체", "기타" }; // 카테고리의 이름을 저장할 배열 
+
+// 나중에 질문하기. 
+char category_names[50][10] = { "식비", "취미", "의료", "교통", "교육", "생활", "이체", "기타" }; // 카테고리의 이름을 저장할 배열
 int category_count = 7; // 카테고리 수를 저장
-int budget[50] = { 0 }; // 예산 금액을 저장. 
-int essential_ex[50] = { 0 }; // 필수 지출 금액 따로 저장. 
 
+void EditCategory(int *budget,int *essential_ex); // 카테고리 편집 기능. 
+void SaveExpenditure(int* budget, int* essential_ex); // 지출 저장 기능. 
 
 int main() {
 	// 1. 예산 설정. 
+	
+	int* budget = (int*)malloc(sizeof(int) * category_count); // 예산 금액을 저장. 
+	int *essential_ex = (int*)malloc(sizeof(int) * category_count); // 필수 지출 금액 따로 저장. 
+
 	printf("각 카테고리에 예산을 할당해 주세요. \n");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
@@ -77,18 +88,20 @@ int main() {
 		scanf_s("%d", &choice);
 		if (choice == 1) {
 			printf("지출 항목을 추가합니다. \n");
-			SaveExpenditure();
+			SaveExpenditure(budget, essential_ex);
 			
 		}
 
 		else if (choice == 2) {
 			printf("기존 카테고리를 편집합니다. \n");
-			EditCategory();
+			EditCategory(budget, essential_ex);
 		}
 
 		else if (choice == 3) {
 			printf("프로그램을 종료합니다. \n");
 			// 분석을 시작합니다. 
+			free(budget);
+			free(essential_ex);
 			break;
 		}
 
@@ -101,7 +114,7 @@ int main() {
 
 
 
-void SaveExpenditure() {
+void SaveExpenditure(int* budget, int* essential_ex) {
 	int expenditure[50]; // 지출을 저장할 배열 
 	char input_cate[1][10]; // 지출 발생 카테고리 
 	int valid_cate = 0; // 카테고리 존재 확인 용도
@@ -147,7 +160,7 @@ void SaveExpenditure() {
 
 
 
-void EditCategory() {
+void EditCategory(int* budget, int* essential_ex) {
 	while (1) {
 		// 카테고리 출력 
 		for (int i = 0; i < category_count; i++) {
@@ -159,7 +172,7 @@ void EditCategory() {
 		scanf_s("%d", &choice_category);
 
 		if (choice_category == 1) {
-			if (category_count== 1) { 
+			if (category_count == 1) { 
 				printf("최소 한 개 이상의 카테고리가 존재해야 합니다. "); // 카테고리 전부 삭제 차단 
 			}
 			else {
