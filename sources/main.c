@@ -1,41 +1,38 @@
 #include <stdio.h>
+#include <stdlib.h> // µ¿Àû ¸Ş¸ğ¸®¿ë
 #include <string.h> // strcmp
-#include <stdlib.h> // ë™ì  ë©”ëª¨ë¦¬ìš©
-
-// ì§€ì¶œ ê´€ë¦¬ ìë™í™” í”„ë¡œì íŠ¸ // 
 
 
-// 28ì¼ì •ë„ê¹Œì§€: ì§€ì¶œ ë¶„ì„ ê¸°ëŠ¥ - ì†Œë¹„ ê¸ˆì•¡ ê³„ì‚° ê¸°ëŠ¥. 
-// ê° ì˜ˆì‚°ë³„ ì‚¬ìš© ê¸ˆì•¡ê³¼ ì´ ì†Œë¹„ì•¡ì„ ì œì‹œ. (ì†Œë¹„ ê¸ˆì•¡ ì…ë ¥ë°›ëŠ” ê¸°ëŠ¥. )
-
-// ëŒ€ëŒ€ì ìœ¼ë¡œ í¬ì¸í„° ë³€í™˜ ì‘ì—… í•˜ê¸°. 
-// í¬ì¸í„°ë¥¼ ì“°ê¸° ì¢‹ì€ ìˆœê°„. 1. í•¨ìˆ˜ í˜¸ì¶œë¡œ ê°’ ë³€ê²½. 2. ë™ì  ë©”ëª¨ë¦¬ í• ë‹¹. 
-// ~ 24ì¼ ë°°ì—´ ë™ì  ë©”ëª¨ë¦¬ë¡œ ì „í™˜í•˜ê¸°. 
-
-// 1. ì¹´í…Œê³ ë¦¬ í¸ì§‘ ê¸°ëŠ¥ì— ì¶”ê°€/ í¸ì§‘ë„ ë„£ê¸°. (ë‚˜ì¤‘ì— ì‹œê°„ ë‚¨ìœ¼ë©´ )
+// ÁöÃâ °ü¸® ÀÚµ¿È­ ÇÁ·ÎÁ§Æ® // 
 
 
+// 28ÀÏÁ¤µµ±îÁö: ÁöÃâ ºĞ¼® ±â´É - ¼Òºñ ±İ¾× °è»ê ±â´É. 
+// °¢ ¿¹»êº° »ç¿ë ±İ¾×°ú ÃÑ ¼Òºñ¾×À» Á¦½Ã. (¼Òºñ ±İ¾× ÀÔ·Â¹Ş´Â ±â´É. )
 
-// ë‚˜ì¤‘ì— ì§ˆë¬¸í•˜ê¸°. 
-char category_names[50][10] = { "ì‹ë¹„", "ì·¨ë¯¸", "ì˜ë£Œ", "êµí†µ", "êµìœ¡", "ìƒí™œ", "ì´ì²´", "ê¸°íƒ€" }; // ì¹´í…Œê³ ë¦¬ì˜ ì´ë¦„ì„ ì €ì¥í•  ë°°ì—´
-int category_count = 7; // ì¹´í…Œê³ ë¦¬ ìˆ˜ë¥¼ ì €ì¥
+//¿øº»
+//char category_names[50][10] = { "½Äºñ", "Ãë¹Ì", "ÀÇ·á", "±³Åë", "±³À°", "»ıÈ°", "ÀÌÃ¼", "±âÅ¸" }; // Ä«Å×°í¸®ÀÇ ÀÌ¸§À» ÀúÀåÇÒ ¹è¿­
+//int category_count = 7; // Ä«Å×°í¸® ¼ö¸¦ ÀúÀå
 
-void EditCategory(int *budget,int *essential_ex); // ì¹´í…Œê³ ë¦¬ í¸ì§‘ ê¸°ëŠ¥. 
-void SaveExpenditure(int* budget, int* essential_ex); // ì§€ì¶œ ì €ì¥ ê¸°ëŠ¥. 
+// Å×½ºÆ®¿ë
+char category_names[50][10] = { "½Äºñ", "Ãë¹Ì"}; 
+int category_count = 2;
+
+void EditCategory(int* budget, int* essential_ex); // Ä«Å×°í¸® ÆíÁı ±â´É. 
+void SaveExpenditure(int* budget, int* essential_ex); // ÁöÃâ ÀúÀå ±â´É. 
 
 int main() {
-	// 1. ì˜ˆì‚° ì„¤ì •. 
-	
-	int* budget = (int*)malloc(sizeof(int) * category_count); // ì˜ˆì‚° ê¸ˆì•¡ì„ ì €ì¥. 
-	int *essential_ex = (int*)malloc(sizeof(int) * category_count); // í•„ìˆ˜ ì§€ì¶œ ê¸ˆì•¡ ë”°ë¡œ ì €ì¥. 
+	// 1. ¿¹»ê ¼³Á¤. 
 
-	printf("ê° ì¹´í…Œê³ ë¦¬ì— ì˜ˆì‚°ì„ í• ë‹¹í•´ ì£¼ì„¸ìš”. \n");
+	int* budget = (int*)malloc(sizeof(int) * category_count); // ¿¹»ê ±İ¾×À» ÀúÀå. 
+	int* essential_ex = (int*)malloc(sizeof(int) * category_count); // ÇÊ¼ö ÁöÃâ ±İ¾× µû·Î ÀúÀå. 
+
+	printf("°¢ Ä«Å×°í¸®¿¡ ¿¹»êÀ» ÇÒ´çÇØ ÁÖ¼¼¿ä. \n");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
-		while (1) { // ìŒìˆ˜ ì œì™¸
+		while (1) { // À½¼ö Á¦¿Ü
 			scanf_s("%d", &budget[i]);
 			if (budget[i] < 0) {
-				printf("ìŒìˆ˜ëŠ” ì €ì¥í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•´ ì£¼ì„¸ìš”. ");
+				printf("À½¼ö´Â ÀúÀåÇÒ ¼ö ¾ø½À´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇØ ÁÖ¼¼¿ä. ");
 				continue;
 			}
 			else {
@@ -45,68 +42,67 @@ int main() {
 	}
 	printf("\n");
 
-	// í…ŒìŠ¤íŠ¸ 
+	// Å×½ºÆ® 
 	//for (int i = 0; i < category_count; i++) {
 		//printf("%d %d ", i + 1, budget[i]);
 	//}
-	
 
 
-	printf("ë°œìƒí•  í•„ìˆ˜ ì§€ì¶œì„ ì…ë ¥í•´ì£¼ì„¸ìš”. ");
+	printf("¹ß»ıÇÒ ÇÊ¼ö ÁöÃâÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä. ");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
 		while (1) {
 			scanf_s("%d", &essential_ex[i]);
 			if (budget[i] < essential_ex[i]) {
-				printf("ì„¤ì •ëœ ì˜ˆì‚°ë³´ë‹¤ ì§€ì¶œì´ ë” í½ë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•´ ì£¼ì„¸ìš”. ");
+				printf("¼³Á¤µÈ ¿¹»êº¸´Ù ÁöÃâÀÌ ´õ Å®´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇØ ÁÖ¼¼¿ä. ");
 				continue;
 			}
 			else if (essential_ex < 0) {
-				printf("ìŒìˆ˜ëŠ” ì…ë ¥í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•´ ì£¼ì„¸ìš”. ");
+				printf("À½¼ö´Â ÀÔ·ÂÇÒ ¼ö ¾ø½À´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇØ ÁÖ¼¼¿ä. ");
 				continue;
 			}
-			else { // ë²”ìœ„ ë‚´ì˜ í•„ìˆ˜ ì§€ì¶œì¼ ë•Œë§Œ ì €ì¥. 
+			else { // ¹üÀ§ ³»ÀÇ ÇÊ¼ö ÁöÃâÀÏ ¶§¸¸ ÀúÀå. 
 				budget[i] = budget[i] - essential_ex[i];
 				break;
 			}
 		}
 	}
-	printf("ì˜ˆì‚° í• ë‹¹ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. \n");
+	printf("¿¹»ê ÇÒ´çÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù. \n");
 
-	// í• ë‹¹ ì™„ë£Œ í…ŒìŠ¤íŠ¸ìš© ì¶œë ¥
-	//for (int i = 0; i < category_count; i++) {
-		//printf("%s %d ", category_names[i], budget[i]);
-	//}
-	
+	// ÇÒ´ç ¿Ï·á Å×½ºÆ®¿ë Ãâ·Â
+	for (int i = 0; i < category_count; i++) {
+		printf("%s %d ", category_names[i], budget[i]);
+	}
 
-	// í•  ì¼ ì„ íƒ 
+
+	// ÇÒ ÀÏ ¼±ÅÃ 
 	while (1) {
-		int choice; 
-		// ì¢…ë£Œ ë²„íŠ¼ì„ ì„ íƒí•˜ëŠ” ìˆœê°„ ë‹¬ì˜ ëìœ¼ë¡œ ì—¬ê¸°ê³  ë¶„ì„ ì‹œì‘. 
-		// íŒŒì¼ ìƒì„± ê¸°ëŠ¥ ê°™ì€ ê±° ë°°ìš°ë©´ ë‹¬ì˜ ì¢…ë£Œë¥¼ ì„ íƒí•  ìˆ˜ ìˆê³ , ì¤‘ê°„ì¤‘ê°„ì— ì„¸ì´ë¸Œí•˜ë„ë¡ ê°œì„ í•˜ê¸°. 
-		printf("ì›í•˜ëŠ” ê¸°ëŠ¥ì„ ì„ íƒí•´ ì£¼ì„¸ìš”. (1. ì§€ì¶œ ì¶”ê°€, 2. ì¹´í…Œê³ ë¦¬ í¸ì§‘, 3. ì¢…ë£Œ): ");
+		int choice;
+		// Á¾·á ¹öÆ°À» ¼±ÅÃÇÏ´Â ¼ø°£ ´ŞÀÇ ³¡À¸·Î ¿©±â°í ºĞ¼® ½ÃÀÛ. 
+		// ÆÄÀÏ »ı¼º ±â´É °°Àº °Å ¹è¿ì¸é ´ŞÀÇ Á¾·á¸¦ ¼±ÅÃÇÒ ¼ö ÀÖ°í, Áß°£Áß°£¿¡ ¼¼ÀÌºêÇÏµµ·Ï °³¼±ÇÏ±â. 
+		printf("¿øÇÏ´Â ±â´ÉÀ» ¼±ÅÃÇØ ÁÖ¼¼¿ä. (1. ÁöÃâ Ãß°¡, 2. Ä«Å×°í¸® ÆíÁı, 3. Á¾·á): ");
 		scanf_s("%d", &choice);
 		if (choice == 1) {
-			printf("ì§€ì¶œ í•­ëª©ì„ ì¶”ê°€í•©ë‹ˆë‹¤. \n");
+			printf("ÁöÃâ Ç×¸ñÀ» Ãß°¡ÇÕ´Ï´Ù. \n");
 			SaveExpenditure(budget, essential_ex);
-			
+
 		}
 
 		else if (choice == 2) {
-			printf("ê¸°ì¡´ ì¹´í…Œê³ ë¦¬ë¥¼ í¸ì§‘í•©ë‹ˆë‹¤. \n");
+			printf("±âÁ¸ Ä«Å×°í¸®¸¦ ÆíÁıÇÕ´Ï´Ù. \n");
 			EditCategory(budget, essential_ex);
 		}
 
 		else if (choice == 3) {
-			printf("í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤. \n");
-			// ë¶„ì„ì„ ì‹œì‘í•©ë‹ˆë‹¤. 
+			printf("ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù. \n");
+			// ºĞ¼®À» ½ÃÀÛÇÕ´Ï´Ù. 
 			free(budget);
 			free(essential_ex);
 			break;
 		}
 
 		else {
-			printf("ì£¼ì–´ì§„ ì„ íƒì§€ë¥¼ ê³¨ë¼ ì£¼ì„¸ìš”. \n"); // ì„ íƒì§€ ì´ì™¸ ì˜ˆì™¸ ì œê±° 
+			printf("ÁÖ¾îÁø ¼±ÅÃÁö¸¦ °ñ¶ó ÁÖ¼¼¿ä. \n"); // ¼±ÅÃÁö ÀÌ¿Ü ¿¹¿Ü Á¦°Å 
 			continue;
 		}
 	}
@@ -115,93 +111,91 @@ int main() {
 
 
 void SaveExpenditure(int* budget, int* essential_ex) {
-	int expenditure[50]; // ì§€ì¶œì„ ì €ì¥í•  ë°°ì—´ 
-	char input_cate[1][10]; // ì§€ì¶œ ë°œìƒ ì¹´í…Œê³ ë¦¬ 
-	int valid_cate = 0; // ì¹´í…Œê³ ë¦¬ ì¡´ì¬ í™•ì¸ ìš©ë„
-	int index_cate; // ì…ë ¥ë°›ì€ ê°’ì˜ ìœ„ì¹˜ í™•ì¸ 
+	int input_expenditure = 0; // ÁöÃâ ÀúÀå
+	int* total_expenditure = (int*)malloc(sizeof(int) * 100); // Ä«Å×°í¸®º° ÁöÃâ ¹ß»ı ÇöÈ²
+	char* input_cate = (char*)malloc(sizeof(char) * 100); // ÁöÃâ ¹ß»ı Ä«Å×°í¸®
+	int valid_cate = 0; // Ä«Å×°í¸® Á¸Àç È®ÀÎ ¿ëµµ
+	int input_index = 0; // ÀÔ·Â¹ŞÀº Ä«Å×°í¸® Á¸Àç À§Ä¡ ÀúÀå
 
 
-	printf("ì§€ì¶œì´ ë°œìƒí•œ ì¹´í…Œê³ ë¦¬ë¥¼ ì…ë ¥í•´ ì£¼ì„¸ìš”. ");
-	while (valid_cate != 1) {
-		scanf_s("%s", &input_cate, (int)sizeof(input_cate));
+	printf("ÁöÃâÀÌ ¹ß»ıÇÑ Ä«Å×°í¸®¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä. ");
+	while (valid_cate !=1) {
+		scanf_s("%s", input_cate, (int)sizeof(input_cate));
 		for (int i = 0; i < category_count; i++) {
-			if (strcmp(input_cate, category_names[i]) == 0) {
-				index_cate = i;
+			if (strcmp(input_cate, category_names[i]) == 0) { // strcmp -> 0 ÀÏÄ¡
+				input_index = i; // Ä«Å×°í¸® À§Ä¡ ÀúÀå. 
 				valid_cate = 1;
+				break;
 			}
 		}
-		if (valid_cate != 1) { // ì—†ëŠ” ì¹´í…Œê³ ë¦¬ ì…ë ¥ë°›ëŠ” ê²½ìš° ì œì™¸ 
-			printf("ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ì¹´í…Œê³ ë¦¬ì…ë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
+		if (valid_cate == 0) { // ¾ø´Â Ä«Å×°í¸® ÀÔ·Â¹Ş´Â °æ¿ì Á¦¿Ü 
+			printf("Á¸ÀçÇÏÁö ¾Ê´Â Ä«Å×°í¸®ÀÔ´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇØ ÁÖ¼¼¿ä.");
 			continue;
 		}
 	}
-	
-	
 
-	// ì§€ì¶œ ê¸ˆì•¡ ì…ë ¥ë°›ê³  í•´ë‹¹ ì¹´í…Œê³ ë¦¬ ì˜ˆì‚°ì—ì„œ ë§ˆì´ë„ˆìŠ¤
-	// ë°œìƒí•˜ê³  ìˆëŠ” ì§€ì¶œì˜ ì´ì•¡ë„ ì €ì¥í•´ì•¼ í•¨. 
-
-	int total_expenditure[50]; // ì¹´í…Œê³ ë¦¬ë³„ ì§€ì¶œ ì´ì•¡ 
-	int new_expenditure[50]; // ìƒˆë¡œ ë°œìƒí•˜ëŠ” ì§€ì¶œ
-
-	printf("ì§€ì¶œ ë°œìƒ ê¸ˆì•¡ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”. ");
-	while (1) {
-		scanf_s("%d ", &new_expenditure);
-		if (new_expenditure <= 0) { // ìŒìˆ˜, 0 ì œì™¸ 
-			printf("ë°œìƒí•œ ì§€ì¶œì„ ì…ë ¥í•´ ì£¼ì„¸ìš”.");
-		}
-		else {
-			
-		}
-		
-	}
 	
+	// ÁöÃâ ±İ¾× ÀÔ·Â¹Ş°í ÇØ´ç Ä«Å×°í¸® ¿¹»ê¿¡¼­ ¸¶ÀÌ³Ê½º
+	// ¹ß»ıÇÏ°í ÀÖ´Â ÁöÃâÀÇ ÃÑ¾×µµ ÀúÀåÇØ¾ß ÇÔ. 
+	printf("¹ß»ıÇÑ ÁöÃâ ±İ¾×À» ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+	scanf_s("%d", &input_expenditure);
+	total_expenditure[input_index] += input_expenditure; // Ä«Å×°í¸®º°ÁöÃâ ÃÑ¾× ÀúÀå
+	budget[input_index] -= input_expenditure; // ¿¹»ê¿¡¼­ ¸¶ÀÌ³Ê½º
+
+
+	// Å×½ºÆ®
+	printf("input_expenditure: %d ", input_expenditure);
+	printf("budget: %d ",budget[input_index]);
+
+	free(input_cate);
+	free(total_expenditure);
 }
 
 
 
 void EditCategory(int* budget, int* essential_ex) {
 	while (1) {
-		// ì¹´í…Œê³ ë¦¬ ì¶œë ¥ 
+		// Ä«Å×°í¸® Ãâ·Â 
 		for (int i = 0; i < category_count; i++) {
 			printf("%d %s ", i + 1, category_names[i]);
 		}
 
 		int choice_category;
-		printf("(1. ì¹´í…Œê³ ë¦¬ ì‚­ì œ, 2. ì¹´í…Œê³ ë¦¬ í¸ì§‘ ì¢…ë£Œ): ");
+		printf("(1. Ä«Å×°í¸® »èÁ¦, 2. Ä«Å×°í¸® ÆíÁı Á¾·á): ");
 		scanf_s("%d", &choice_category);
 
 		if (choice_category == 1) {
-			if (category_count == 1) { 
-				printf("ìµœì†Œ í•œ ê°œ ì´ìƒì˜ ì¹´í…Œê³ ë¦¬ê°€ ì¡´ì¬í•´ì•¼ í•©ë‹ˆë‹¤. "); // ì¹´í…Œê³ ë¦¬ ì „ë¶€ ì‚­ì œ ì°¨ë‹¨ 
+			if (category_count == 1) {
+				printf("ÃÖ¼Ò ÇÑ °³ ÀÌ»óÀÇ Ä«Å×°í¸®°¡ Á¸ÀçÇØ¾ß ÇÕ´Ï´Ù. "); // Ä«Å×°í¸® ÀüºÎ »èÁ¦ Â÷´Ü 
 			}
 			else {
 				int del_category;
-				printf("ì‚­ì œë¥¼ ì›í•˜ëŠ” ì¹´í…Œê³ ë¦¬ì˜ ë²ˆí˜¸ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.\n");
+				printf("»èÁ¦¸¦ ¿øÇÏ´Â Ä«Å×°í¸®ÀÇ ¹øÈ£¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.\n");
 				scanf_s("%d", &del_category);
-				
-				// ì˜ˆì‚°ì´ í• ë‹¹ëœ ì¹´í…Œê³ ë¦¬ ì œê±° ê¸ˆì§€
+
+				// ¿¹»êÀÌ ÇÒ´çµÈ Ä«Å×°í¸® Á¦°Å ±İÁö
 				if (budget[del_category] != 0) {
-					printf("í•´ë‹¹ ì¹´í…Œê³ ë¦¬ì— í• ë‹¹ëœ ì˜ˆì‚°ì´ ì¡´ì¬í•©ë‹ˆë‹¤. ");
+					printf("ÇØ´ç Ä«Å×°í¸®¿¡ ÇÒ´çµÈ ¿¹»êÀÌ Á¸ÀçÇÕ´Ï´Ù. ");
 					break;
 				}
 
-				// ë°°ì—´ì„ í•œ ì¹¸ì”© ë‹¹ê²¨ ì‚­ì œ.
+				// ¹è¿­À» ÇÑ Ä­¾¿ ´ç°Ü »èÁ¦.
 				for (int i = del_category - 1; i < category_count - 1; i++) {
 					for (int j = 0; j < 10; j++) {
 						category_names[i][j] = category_names[i + 1][j];
 					}
 				}
 				category_count -= 1;
-				printf("ì‚­ì œê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.\n");
+				printf("»èÁ¦°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù.\n");
+				printf(category_names);
 			}
 		}
 		else if (choice_category == 2) {
-			printf("ì¹´í…Œê³ ë¦¬ í¸ì§‘ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.\n");
+			printf("Ä«Å×°í¸® ÆíÁıÀ» Á¾·áÇÕ´Ï´Ù.\n");
 			break;
 		}
 		else {
-			printf("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤.\n");
+			printf("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù.\n");
 		}
 	}
 }
