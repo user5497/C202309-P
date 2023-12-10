@@ -31,30 +31,23 @@ void SaveExpenditure(struct Expenditure* exp, char(*category_names)[10], int cat
 
 
 	printf("발생한 지출 금액을 입력해주세요.");
-	scanf_s("%d", &input_expenditure);
+	scanf_s("%d", &input_expenditure);	
 
-	// 테스트
-	printf("input_index %d\n", input_index);
-	// 오류 
-	// 이상한 값이 저장되어있음. input_index가 범위 벗어난건가? 저장공간이 부족한가? 
-	printf("total_expenditure %d\n", exp->total_expenditure[input_index]);
-	
 
+	exp->total_expenditure[input_index] += input_expenditure; // 카테고리별 지출 총액 저장
+	exp->cost[input_index] -= input_expenditure; // 예산에서 마이너스
 
 	// 예산 초과 경고만, 음수 연산 허용. 
 	if (exp->total_expenditure[input_index] > exp->budget[input_index]) {
 		printf("설정 예산을 초과했습니다. \n");
 	}
 
-	exp->total_expenditure[input_index] += input_expenditure; // 카테고리별 지출 총액 저장
-	exp->cost[input_index] -= input_expenditure; // 예산에서 마이너스
-	
 
-	// 각 예산별 사용 금액과 총 소비액을 제시. 
-	// 해당 카테고리 사용 금액 / 총 예산
-	// 예산 원형 저장 필요성. 
+	// 각 예산별 사용 금액과 총 소비액 제시. 
+	// 해당 카테고리 사용 금액 / 총 예산 
 	printf("해당 카테고리에서의 총 사용 금액:%d / 예산: %d\n", exp->total_expenditure[input_index], exp->budget[input_index]);
-	printf("%d원 남았습니다. ", exp->total_expenditure[input_index] - exp->budget[input_index]);
+	printf("%d원 남았습니다. ", exp->cost[input_index]);
+
 }
 
 
@@ -79,10 +72,7 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 			printf("삭제를 원하는 카테고리의 번호를 선택해주세요.\n");
 			scanf_s("%d", &del_category);
 
-
-
-			//테스트 , 1은 정상 작동하는데 2는 못 받아옴. index 문제인 듯? 
-			printf("budget %d",exp->budget[del_category]);
+			del_category = del_category-1; // 인덱스 벗어나는 거 방지. 
 
 			// 예산이 할당된 카테고리 제거 금지
 			if (exp->budget[del_category] != 0) {
@@ -118,9 +108,7 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 }
 
 
-
-
-// 총 지출액 평가 기능. 
+// 지출 분석 기능
 void Evaludation(struct Expenditure* exp, char(*category_names)[10], int category_count) {
-	// 지출액이 예산 넘어가면 경고해주기
+	printf("%d", 1);
 }
