@@ -3,12 +3,12 @@
 
 
 // 카테고리별 예산을 입력받는 기능. 
-void Input_budget(struct Expenditure* exp,char *category_names,int category_count) {
+void Input_budget(struct Expenditure* exp, char (*category_names)[10], int category_count) {
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
-		while (1) { // 음수 제외
-			scanf_s("%d", exp->budget[i]);
-			if (exp->budget[i] < 0) {
+		while (1) {
+			scanf_s("%d", &exp->budget[i]);
+			if (exp->budget[i] < 0) { // 음수 제외
 				printf("음수는 저장할 수 없습니다. 다시 입력해 주세요. ");
 				continue;
 			}
@@ -24,12 +24,12 @@ void Input_budget(struct Expenditure* exp,char *category_names,int category_coun
 	//}
 }
 
-void Input_essential_ex(struct Expenditure* exp, char* category_names, int category_count) {
+void Input_essential_ex(struct Expenditure* exp, char(* category_names)[10], int category_count) {
 	printf("발생할 필수 지출을 입력해주세요. ");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
 		while (1) {
-			scanf_s("%d", exp->essential_ex[i]);
+			scanf_s("%d", &exp->essential_ex[i]);
 			if (exp->budget[i] < exp->essential_ex[i]) {
 				printf("설정된 예산보다 지출이 더 큽니다. 다시 입력해 주세요. ");
 				continue;
