@@ -1,4 +1,5 @@
 #include "func.h" 
+#include <stdio.h>
 
 // 시간날 때 프린트문이랑 기능이랑 분리해서 함수 줄이는 작업하기. 
 
@@ -108,7 +109,66 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 }
 
 
-// 지출 분석 기능
+// 달성도 평가(지출 분석 기능)
+
+// 예산을 아낀 정도에 비한 달성도 평가로, 지출 저장 단계에서 연계. 
 void Evaludation(struct Expenditure* exp, char(*category_names)[10], int category_count) {
-	printf("%d", 1);
+	// 카테고리별 총 지출 내역 / 초기 예산
+	// 얼마나 아끼거나 초과했는지 제시, 차후 이를 바탕으로 예산 추천.  -> 아낀 정도를 저장할 함수? 
+
+	// 아낀 정도를 저장. 
+	int *save_budget = (int*)malloc(category_count*sizeof(int));
+	
+	// 초기화
+	for (int i = 0; i < category_count; i++) {
+		save_budget[i] = 0;
+	}
+	
+
+
+
+	// 테스트 기능.
+	FILE* file;
+	fopen(&file,"expenditure.txt", "a");
+	if (file != NULL) {
+		fclose(file);
+		printf("파일을 열 수 없습니다.\n"); // 기능 확정되면 개선. 
+	}
+
+	
+
+	for (int i = 0; i < category_count; i++) {
+		save_budget[i] = exp->budget[i] - exp->total_expenditure[i];
+		printf("%s에서의 총 사용 금액:%d / 예산: %d\n", category_names[i], exp->total_expenditure[i], exp->budget[i]);
+		
+		
+		// 테스트 기능. 
+		fprintf(file, "%d달차 사용금액: %d/ 남은예산: %d", exp->total_expenditure[i], exp->budget[i]);
+
+
+		if (save_budget[i] > 0) {
+			printf("%d% 아꼈습니다. ", save_budget[i]/exp->budget[i]);
+			// 아래 추천 기능 전개. 
+		}
+		else if (save_budget[i] < 0) {
+			printf("%d% 초과했습니다. ", save_budget[i]/exp->budget[i]);
+		}
+		else {
+			printf("전부 사용했습니다. ");
+		}
+		
+	}
+
+	
 }
+
+
+
+// 시간 남을때 하기. 
+// 우리 프로그램만의 차별점 --> 추천 기능 
+// 추천 기능을 좀 더 구체화? 
+// 파일 기능 기반으로 누적 추천 기능 추가
+
+// 매커니즘 
+// 누적이면 별점이 아니라 아낀 금액/ 초과한 금액을 저장,
+// 점점 간격이 줄어들고 최적의 예산 설정액을 찾는 느낌
