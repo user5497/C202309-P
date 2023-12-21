@@ -110,65 +110,61 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 
 
 // 달성도 평가(지출 분석 기능)
-
-// 예산을 아낀 정도에 비한 달성도 평가로, 지출 저장 단계에서 연계. 
 void Evaludation(struct Expenditure* exp, char(*category_names)[10], int category_count) {
-	// 카테고리별 총 지출 내역 / 초기 예산
-	// 얼마나 아끼거나 초과했는지 제시, 차후 이를 바탕으로 예산 추천.  -> 아낀 정도를 저장할 함수? 
 
-	// 아낀 정도를 저장. 
-	int *save_budget = (int*)malloc(category_count*sizeof(int));
-	
-	// 초기화
-	for (int i = 0; i < category_count; i++) {
-		save_budget[i] = 0;
-	}
-	
-
-
-
-	// 테스트 기능.
+	// 파일 생성 기능 같은 거 배우면 달의 종료를 선택할 수 있고, 중간중간에 세이브하도록 개선하기. 
+	// 파일 기능 추가하면 서류 기능 부분도 수정하기.
+	// 최초 예산 설정 시 추천하고 시작하도록 개선하기 - > 누적 추천 기능 개선? 시간 없을 듯. 
+	// 테스트 기능, 미완 
+	/*
 	FILE* file;
-	fopen(&file,"expenditure.txt", "a");
+	fopen_s(&file,"expenditure.txt", "a");
 	if (file != NULL) {
 		fclose(file);
-		printf("파일을 열 수 없습니다.\n"); // 기능 확정되면 개선. 
+		printf("파일을 열 수 없습니다. 작성할 수 없습니다.\n"); // 개선 고민. 
 	}
+	*/
 
 	
 
+
 	for (int i = 0; i < category_count; i++) {
-		save_budget[i] = exp->budget[i] - exp->total_expenditure[i];
-		printf("%s에서의 총 사용 금액:%d / 예산: %d\n", category_names[i], exp->total_expenditure[i], exp->budget[i]);
+		exp->save_budget[i] = exp->budget[i] - exp->total_expenditure[i]; 
+		printf("%s에서의 총 사용 금액:%d / 예산: %d (남은금액: %d)\n", category_names[i], exp->total_expenditure[i], exp->budget[i],exp->save_budget[i]);
+		//fprintf(file, "%s에서의 총 사용 금액:%d / 예산: %d (남은금액: %d)\n", category_names[i], exp->total_expenditure[i], exp->budget[i], exp->save_budget[i]);
+		// fprintf(file,"최초 예산, 필수 지출 예산."); 
 		
+
+		// 추천 기능
+		// 아낀 금액도 저장할 필요성. 
+		// 10% ~30% 사용 -> 예산을 너무 크게 설정함. 50%(20% 확대) 수치로 예산을 설정할 것을 권고 
+		// 31%~60% 사용 -> 예산을 크게 설정한 것으로 간주, 80% 수치로 예산 축소 권고 
+		// 61 ~ 80% 사용 -> 적정 수치로 간주. 
+		// 81 ~ 100% 사용 -> 적정 수치이나, 위험 경고 제시. 
+
+		// 101 ~ 150 -> 너무 적은 예산 설정, 130% 정도 예산 확대 권고 
+		// 151~~~ -> 150% 수치로 예산 확대 권고 
 		
-		// 테스트 기능. 
-		fprintf(file, "%d달차 사용금액: %d/ 남은예산: %d", exp->total_expenditure[i], exp->budget[i]);
 
-
-		if (save_budget[i] > 0) {
-			printf("%d% 아꼈습니다. ", save_budget[i]/exp->budget[i]);
-			// 아래 추천 기능 전개. 
+		// 사용 금액과 최초 예산이 같은 경우, 0으로 나누는 경우 차단. 
+		if (exp->save_budget[i] == 0) { 
+			printf("모든 예산을 사용했습니다.\n");
 		}
-		else if (save_budget[i] < 0) {
-			printf("%d% 초과했습니다. ", save_budget[i]/exp->budget[i]);
+		else if (exp->save_budget[i] > 0) { // 예산 미만 지출
+			printf("%2f%% 아꼈습니다.\n", ((float)exp->save_budget[i]/exp->budget[i])*100);
+		}
+		else if (exp->save_budget[i] < 0) { // 예산 초과 지출 
+			printf("%2f%% 초과했습니다.\n", ((float)exp->save_budget[i]/exp->budget[i])*100);
 		}
 		else {
 			printf("전부 사용했습니다. ");
 		}
-		
 	}
+	//fclose(file);
+	
 
 	
 }
 
 
 
-// 시간 남을때 하기. 
-// 우리 프로그램만의 차별점 --> 추천 기능 
-// 추천 기능을 좀 더 구체화? 
-// 파일 기능 기반으로 누적 추천 기능 추가
-
-// 매커니즘 
-// 누적이면 별점이 아니라 아낀 금액/ 초과한 금액을 저장,
-// 점점 간격이 줄어들고 최적의 예산 설정액을 찾는 느낌
