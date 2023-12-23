@@ -1,5 +1,5 @@
-#include "func.h" 
 #include <stdio.h>
+#include "func.h" 
 
 // 시간날 때 프린트문이랑 기능이랑 분리해서 함수 줄이는 작업하기. 
 
@@ -47,7 +47,7 @@ void SaveExpenditure(struct Expenditure* exp, char(*category_names)[10], int cat
 	// 각 예산별 사용 금액과 총 소비액 제시. 
 	// 해당 카테고리 사용 금액 / 총 예산 
 	printf("해당 카테고리에서의 총 사용 금액:%d / 예산: %d\n", exp->total_expenditure[input_index], exp->budget[input_index]);
-	printf("%d원 남았습니다. ", exp->cost[input_index]);
+	printf("%d원 남았습니다.\n", exp->cost[input_index]);
 
 }
 
@@ -71,17 +71,20 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 			}
 
 			printf("삭제를 원하는 카테고리의 번호를 선택해주세요.\n");
+			printf("예산이 할당되지 않은 카테고리만 삭제할 수 있습니다.\n");
+			// 카테고리 이름 제시.
+			for (int i = 0; i < category_count; i++) {
+				printf("%d %s ", i+1, category_names[i]);
+			}
 			scanf_s("%d", &del_category);
 
 			del_category = del_category-1; // 인덱스 벗어나는 거 방지. 
 
 			// 예산이 할당된 카테고리 제거 금지
 			if (exp->budget[del_category] != 0) {
-				printf("해당 카테고리에 할당된 예산이 존재합니다. ");
+				printf("해당 카테고리에 할당된 예산이 존재합니다. \n");
 				continue;
 			}
-
-
 
 			// 삭제 진행.
 			for (int i = del_category - 1; i < category_count - 1; i++) {
@@ -111,59 +114,85 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 
 // 달성도 평가(지출 분석 기능)
 void Evaludation(struct Expenditure* exp, char(*category_names)[10], int category_count) {
-
-	// 파일 생성 기능 같은 거 배우면 달의 종료를 선택할 수 있고, 중간중간에 세이브하도록 개선하기. 
-	// 파일 기능 추가하면 서류 기능 부분도 수정하기.
-	// 최초 예산 설정 시 추천하고 시작하도록 개선하기 - > 누적 추천 기능 개선? 시간 없을 듯. 
-	// 테스트 기능, 미완 
-	/*
-	FILE* file;
-	fopen_s(&file,"expenditure.txt", "a");
-	if (file != NULL) {
-		fclose(file);
-		printf("파일을 열 수 없습니다. 작성할 수 없습니다.\n"); // 개선 고민. 
-	}
-	*/
-
 	
-
+	FILE* file;
+	fopen_s(&file,"expenditure.txt", "w"); // 1회차 내용만 저장.
+	if (file == NULL) {
+		printf("파일을 작성할 수 없습니다.\n"); 
+		fclose(file);
+	}
+	
 
 	for (int i = 0; i < category_count; i++) {
 		exp->save_budget[i] = exp->budget[i] - exp->total_expenditure[i]; 
 		printf("%s에서의 총 사용 금액:%d / 예산: %d (남은금액: %d)\n", category_names[i], exp->total_expenditure[i], exp->budget[i],exp->save_budget[i]);
-		//fprintf(file, "%s에서의 총 사용 금액:%d / 예산: %d (남은금액: %d)\n", category_names[i], exp->total_expenditure[i], exp->budget[i], exp->save_budget[i]);
-		// fprintf(file,"최초 예산, 필수 지출 예산."); 
+		printf("사용된 필수 지출 금액: %d\n", exp->essential_ex[i]);
+		fprintf(file, "%s에서의 총 사용 금액:%d / 예산: %d (남은금액: %d)\n", category_names[i], exp->total_expenditure[i], exp->budget[i], exp->save_budget[i]);
 		
-
-		// 추천 기능
-		// 아낀 금액도 저장할 필요성. 
-		// 10% ~30% 사용 -> 예산을 너무 크게 설정함. 50%(20% 확대) 수치로 예산을 설정할 것을 권고 
-		// 31%~60% 사용 -> 예산을 크게 설정한 것으로 간주, 80% 수치로 예산 축소 권고 
-		// 61 ~ 80% 사용 -> 적정 수치로 간주. 
-		// 81 ~ 100% 사용 -> 적정 수치이나, 위험 경고 제시. 
-
-		// 101 ~ 150 -> 너무 적은 예산 설정, 130% 정도 예산 확대 권고 
-		// 151~~~ -> 150% 수치로 예산 확대 권고 
-		
-
-		// 사용 금액과 최초 예산이 같은 경우, 0으로 나누는 경우 차단. 
-		if (exp->save_budget[i] == 0) { 
-			printf("모든 예산을 사용했습니다.\n");
-		}
-		else if (exp->save_budget[i] > 0) { // 예산 미만 지출
-			printf("%2f%% 아꼈습니다.\n", ((float)exp->save_budget[i]/exp->budget[i])*100);
-		}
-		else if (exp->save_budget[i] < 0) { // 예산 초과 지출 
-			printf("%2f%% 초과했습니다.\n", ((float)exp->save_budget[i]/exp->budget[i])*100);
+	
+		// percentage 수치 저장. 
+		if (exp->save_budget[i] == 0) { // 사용 금액과 최초 예산이 같은 경우, 0으로 나누는 경우 차단. 
+			exp->save_percentage[i] = 0;
 		}
 		else {
-			printf("전부 사용했습니다. ");
+			exp->save_percentage[i] = ((float)exp->save_budget[i] / exp->budget[i])*100;
 		}
-	}
-	//fclose(file);
-	
 
-	
+
+		// 예산 초과,미만 지출 여부 판단. 
+		if (exp->save_budget[i] > 0) { // 예산 미만 지출
+			printf("%f%% 아꼈습니다.\n", ((float)exp->save_percentage[i]));
+		}
+		else if (exp->save_budget[i] < 0) { // 예산 초과 지출 
+			printf("%f%% 초과했습니다.\n", ((float)exp->save_percentage[i]));
+		}
+		else { // save_budget[i] == 0
+			printf("모든 예산을 사용했습니다.\n");
+		}
+
+		
+		// 예산 추천. 
+		
+
+		if (exp->save_percentage[i] < 0) { // 초과
+			if (-150 <= exp->save_percentage[i] && exp->save_percentage[i] <= -100) {
+				printf("예산을 초과하여 사용하셨습니다.\n");
+				printf("차후 %f원으로 예산을 늘릴 것을 추천합니다.\n ", (float)exp->budget[i] * 1.3);
+				fprintf(file, "%s의 예산을 %f원으로 할 것을 추천합니다. ", category_names[i], (float)exp->budget[i] * 1.3);
+			}
+			else {
+				printf("예산을 150%%초과하여 사용하셨습니다.\n");
+				printf("차후 %f원으로 예산을 늘릴 것을 추천합니다.\n ", (float)exp->budget[i] * 1.5);
+				fprintf(file, "%s의 예산을 %f원으로 설정할 것을 추천합니다.\n ", category_names[i], (float)exp->budget[i] * 1.5);
+			}
+		}
+		
+		else if (exp->save_percentage[i] > 0) { // 미만 
+			if (exp->save_percentage[i] <= 30) {
+				printf("예산의 30%% 이하를 사용하셨습니다.\n"); // 20% 확대 수치로 예산을 설정할 것을 권고 
+				printf("차후 %f원으로 예산을 줄일 것을 추천합니다.\n ", (float)exp->budget[i] * 0.5);
+				fprintf(file, "%s의 예산을 %f원으로 설정할 것을 추천합니다. ", category_names[i], (float)exp->budget[i] * 0.5);
+			}
+			else if (30 < exp->save_percentage[i] && exp->save_percentage[i] <= 60) {
+				printf("예산의 60%% 이하를 사용하셨습니다.\n");
+				printf("차후 %f원으로 예산을 줄일 것을 추천합니다.\n ", (float)exp->budget[i] * 0.8);
+				fprintf(file, "%s의 예산을 %f원으로 설정할 것을 추천합니다.\n ", category_names[i], (float)exp->budget[i] * 0.8);
+			}
+			else if (60 < exp->save_percentage[i] && exp->save_percentage[i] <= 100) {
+				printf("60~100%%의 에산을 사용하셨습니다. \n");
+				printf("적정 수치입니다.\n");
+				fprintf(file, "%s의 예산을 %f원으로 설정할 것을 추천합니다.\n ", category_names[i], (float)exp->budget[i]); // 유지
+			}
+		}
+
+		else { // (exp->total_expenditure[i] == 0)
+			printf("예산을 사용하지 않으셨습니다.\n");
+			fprintf(file, "지난 달에 예산을 사용하지 않으셨습니다.\n");
+		}
+
+		printf("\n"); //가독성
+	}
+	fclose(file);
 }
 
 

@@ -7,17 +7,15 @@
 // 지출 관리 자동화 프로젝트 // 
 
 
-//원본
-//char category_names[50][10] = { "식비", "취미", "의료", "교통", "교육", "생활", "이체", "기타" }; // 카테고리의 이름을 저장할 배열
-//int category_count = 7; // 카테고리 수를 저장
-// 테스트용
+char category_names[50][10] = { "식비", "취미", "의료", "교통", "교육", "생활", "이체", "기타" }; // 카테고리의 이름을 저장할 배열
+int category_count = 7; // 카테고리 수를 저장
+/* 테스트용
 char category_names[50][10] = { "식비", "취미" };
 int category_count = 2;
-// 카테고리 수랑 이름도 나중에 파일 입출력 기능 배우면 구조체에 넣는 거 시도해보기
+*/
 
 int main() {
 	// 1. 예산 설정. 
-	// 예산 원형 따로 저장해두기 
 	struct Expenditure* exp = (struct Expenditure*)malloc(category_count * sizeof(struct Expenditure));
 
 	// 예산과 필수 지출 배열 동적 할당. 
@@ -44,7 +42,7 @@ int main() {
 		exp->total_expenditure[i] = 0;
 		exp->cost[i] = 0;
 		exp->save_budget[i] = 0;
-		exp->save_percentage = 0;
+		exp->save_percentage[i] = 0;
 	}
 	
 
@@ -56,7 +54,7 @@ int main() {
 	Input_essential_ex(exp, category_names, category_count);
 
 
-	printf("예산 할당이 완료되었습니다. \n");
+	printf("\n예산 할당이 완료되었습니다. \n");
 	// 원형복사하기 
 	memcpy(exp->cost, exp->budget, category_count * sizeof(int));
 
@@ -70,17 +68,17 @@ int main() {
 	// 할 일 선택 
 	while (1) {
 		int choice;
-		printf("원하는 기능을 선택해 주세요. (1. 지출 추가, 2. 카테고리 편집, 3. 종료): \n");
+		printf("원하는 기능을 선택해 주세요. (1. 지출 추가, 2. 카테고리 편집, 3. 종료):");
 		scanf_s("%d", &choice);
 
 		if (choice == 1) {
-			printf("지출 항목을 추가합니다. \n");
+			printf("\n지출 항목을 추가합니다. \n");
 			SaveExpenditure(exp, &category_names, category_count);
 		}
 
 
 		else if (choice == 2) {
-			printf("기존 카테고리를 편집합니다. \n");
+			printf("\n기존 카테고리를 편집합니다. \n");
 			// 카테고리 출력 
 			for (int i = 0; i < category_count; i++) {
 				printf("%d %s ", i + 1, category_names[i]);
@@ -91,7 +89,7 @@ int main() {
 
 		else if (choice == 3) {
 			int save_on = 0; // 평가 기능 활성화 여부 
-			printf("지출 분석을 시작하겠습니까? (1. 활성화 / 0. 종료): ");
+			printf("\n지출 분석을 시작하겠습니까? (1. 활성화 / 0. 종료): ");
 			scanf_s("%d", &save_on);
 			if (save_on == 1) {
 				Evaludation(exp, &category_names, category_count);
@@ -113,6 +111,7 @@ int main() {
 				free(exp->essential_ex[i]);
 				free(exp->total_expenditure[i]);
 				free(exp->save_budget[i]);
+				free(exp->save_percentage[i]);
 			}
 			break;
 		}
@@ -124,16 +123,3 @@ int main() {
 		}
 	}
 }
-
-
-
-// 12/15 달성도 평가 완성하기 
-// 예산을 아낀 정도에 의한 달성도 평가. 
-
-
-// 22일 최종 기능: 예산 설정 추천 기능 진행하기. 
-// 지난 활동 베이스 
-// 시간 남으면 보안 기능(비밀번호 입력으로 입장) 기능 추가하기. 
-
-
-
