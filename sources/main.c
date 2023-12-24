@@ -9,10 +9,7 @@
 
 char category_names[50][10] = { "식비", "취미", "의료", "교통", "교육", "생활", "이체", "기타" }; // 카테고리의 이름을 저장할 배열
 int category_count = 7; // 카테고리 수를 저장
-/* 테스트용
-char category_names[50][10] = { "식비", "취미" };
-int category_count = 2;
-*/
+
 
 int main() {
 	// 1. 예산 설정. 
@@ -48,16 +45,15 @@ int main() {
 
 	// 카테고리별 예산 입력받기.
 	printf("각 카테고리에 예산을 할당해 주세요. \n");
-	Input_budget(exp, category_names, category_count);
+	InputBudget(exp, category_names, category_count);
 
 	// 필수 지출 금액 저장. 
-	Input_essential_ex(exp, category_names, category_count);
+	InputEssentialEx(exp, category_names, category_count);
 
 
 	printf("\n예산 할당이 완료되었습니다. \n");
 	// 원형복사하기 
 	memcpy(exp->cost, exp->budget, category_count * sizeof(int));
-
 
 	// 할당 완료 테스트용 출력
 	//for (int i = 0; i < category_count; i++) {
@@ -69,7 +65,7 @@ int main() {
 	while (1) {
 		int choice;
 		printf("원하는 기능을 선택해 주세요. (1. 지출 추가, 2. 카테고리 편집, 3. 종료):");
-		scanf_s("%d", &choice);
+		choice = InputIntOnly();
 
 		if (choice == 1) {
 			printf("\n지출 항목을 추가합니다. \n");
@@ -90,7 +86,8 @@ int main() {
 		else if (choice == 3) {
 			int save_on = 0; // 평가 기능 활성화 여부 
 			printf("\n지출 분석을 시작하겠습니까? (1. 활성화 / 0. 종료): ");
-			scanf_s("%d", &save_on);
+			save_on = InputIntOnly();
+
 			if (save_on == 1) {
 				Evaludation(exp, &category_names, category_count);
 				break;
@@ -104,15 +101,14 @@ int main() {
 				continue;
 			}
 
-			// 메모리 할당 해제, 여기 확인 필요. 
-			for (int i = 0; i < category_count; i++) {
-				free(exp->budget[i]);
-				free(exp->cost[i]);
-				free(exp->essential_ex[i]);
-				free(exp->total_expenditure[i]);
-				free(exp->save_budget[i]);
-				free(exp->save_percentage[i]);
-			}
+			// 메모리 할당 해제, 
+			free(exp->budget);
+			free(exp->cost);
+			free(exp->essential_ex);
+			free(exp->total_expenditure);
+			free(exp->save_budget);
+			free(exp->save_percentage);
+			
 			break;
 		}
 

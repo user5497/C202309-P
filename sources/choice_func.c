@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include "func.h" 
 
-// 시간날 때 프린트문이랑 기능이랑 분리해서 함수 줄이는 작업하기. 
 
-
-// 지출 저장 기능. 
+// 소비 금액 저장 기능. 
 void SaveExpenditure(struct Expenditure* exp, char(*category_names)[10], int category_count) {
 
 	char input_cate[10]; // 카테고리 최대 글자수 10
@@ -32,8 +30,14 @@ void SaveExpenditure(struct Expenditure* exp, char(*category_names)[10], int cat
 
 
 	printf("발생한 지출 금액을 입력해주세요.");
-	scanf_s("%d", &input_expenditure);	
-
+	while (1) {
+		if ((input_expenditure = InputIntOnly()) < 0) {// 음수 제외 
+			printf("음수는 저장할 수 없습니다. 다시 입력해 주세요.\n");
+		}
+		else { // 정상 입력. 
+			break;
+		}
+	}
 
 	exp->total_expenditure[input_index] += input_expenditure; // 카테고리별 지출 총액 저장
 	exp->cost[input_index] -= input_expenditure; // 예산에서 마이너스
@@ -47,7 +51,7 @@ void SaveExpenditure(struct Expenditure* exp, char(*category_names)[10], int cat
 	// 각 예산별 사용 금액과 총 소비액 제시. 
 	// 해당 카테고리 사용 금액 / 총 예산 
 	printf("해당 카테고리에서의 총 사용 금액:%d / 예산: %d\n", exp->total_expenditure[input_index], exp->budget[input_index]);
-	printf("%d원 남았습니다.\n", exp->cost[input_index]);
+	printf("%d원 남았습니다. ", exp->cost[input_index]);
 
 }
 
@@ -60,7 +64,7 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 
 	while (1) {
 		printf("(1. 카테고리 삭제, 2. 카테고리 편집 종료): ");
-		scanf_s("%d", &choice_category);
+		choice_category = InputIntOnly();
 
 		// 카테고리 삭제 선택. 
 		if (choice_category == 1) {
@@ -70,14 +74,9 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 				continue;
 			}
 
-			printf("삭제를 원하는 카테고리의 번호를 선택해주세요.\n");
-			printf("예산이 할당되지 않은 카테고리만 삭제할 수 있습니다.\n");
-			// 카테고리 이름 제시.
-			for (int i = 0; i < category_count; i++) {
-				printf("%d %s ", i+1, category_names[i]);
-			}
-			scanf_s("%d", &del_category);
-
+			printf("삭제를 원하는 카테고리의 번호를 선택해주세요.(예산이 할당되지 않은 카테고리만 삭제할 수 있습니다)\n");
+			
+			del_category = InputIntOnly(); 
 			del_category = del_category-1; // 인덱스 벗어나는 거 방지. 
 
 			// 예산이 할당된 카테고리 제거 금지
@@ -95,7 +94,7 @@ void EditCategory(struct Expenditure* exp, char(*category_names)[10], int catego
 			category_count -= 1;
 
 			printf("삭제가 완료되었습니다.\n");
-			printf(category_names);
+			
 		
 		}
 
@@ -152,8 +151,6 @@ void Evaludation(struct Expenditure* exp, char(*category_names)[10], int categor
 
 		
 		// 예산 추천. 
-		
-
 		if (exp->save_percentage[i] < 0) { // 초과
 			if (-150 <= exp->save_percentage[i] && exp->save_percentage[i] <= -100) {
 				printf("예산을 초과하여 사용하셨습니다.\n");
@@ -194,6 +191,4 @@ void Evaludation(struct Expenditure* exp, char(*category_names)[10], int categor
 	}
 	fclose(file);
 }
-
-
 

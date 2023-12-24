@@ -3,10 +3,10 @@
 
 
 // 카테고리별 예산을 입력받는 기능. 
-void Input_budget(struct Expenditure* exp, char (*category_names)[10], int category_count) {
+void InputBudget(struct Expenditure* exp, char(*category_names)[10], int category_count) {
 
 	FILE* file;
-	fopen_s(&file, "expenditure.txt", "r"); 
+	fopen_s(&file, "expenditure.txt", "r");
 	if (file == NULL) {
 		printf("파일을 작성할 수 없습니다.\n");
 		fclose(file);
@@ -29,34 +29,45 @@ void Input_budget(struct Expenditure* exp, char (*category_names)[10], int categ
 		line_num = 1;
 
 		printf("%s: ", category_names[i]);
-	
+
+		
 		while (1) {
-			scanf_s("%d", &exp->budget[i]);
-			if (exp->budget[i] < 0) { // 음수 제외
-				printf("음수는 저장할 수 없습니다. 다시 입력해 주세요. ");
-				continue;
+			if ((exp->budget[i] = InputIntOnly()) < 0) {// 음수 제외 
+				printf("음수는 저장할 수 없습니다. 다시 입력해 주세요.\n");
 			}
-			else {
+			else { // 정상 입력. 
 				break;
 			}
 		}
+		
 		printf("\n");
 	}
-	
+
 	fclose(file);
-	// 테스트 
-	//for (int i = 0; i < category_count; i++) {
-		//printf("%d %d ", i + 1, budget[i]);
-	//}
+	/* 테스트
+	for (int i = 0; i < category_count; i++) {
+		printf("%d %d ", i + 1, exp->budget[i]);
+	}
+	*/
 }
 
 // 카테고리별 필수 지출 금액을 입력받는 기능. 
-void Input_essential_ex(struct Expenditure* exp, char(* category_names)[10], int category_count) {
+void InputEssentialEx(struct Expenditure* exp, char(* category_names)[10], int category_count) {
 	printf("발생할 필수 지출을 입력해주세요. ");
 	for (int i = 0; i < category_count; i++) {
 		printf("%s: ", category_names[i]);
 		while (1) {
-			scanf_s("%d", &exp->essential_ex[i]);
+
+			while (1) {
+				if ((exp->essential_ex[i] = InputIntOnly()) < 0) {// 음수 제외 
+					printf("음수는 저장할 수 없습니다. 다시 입력해 주세요.\n");
+					while (getchar() != '\n');
+				}
+				else { // 정상 입력. 
+					break;
+				}
+			}
+
 			if (exp->budget[i] < exp->essential_ex[i]) {
 				printf("설정된 예산보다 지출이 더 큽니다. 다시 입력해 주세요. ");
 				continue;
@@ -73,3 +84,17 @@ void Input_essential_ex(struct Expenditure* exp, char(* category_names)[10], int
 	}
 }
 
+// 정수만 입력받는 기능
+int InputIntOnly() {
+	int num;
+
+	while (1) { // 입력 예외 제외
+		if (scanf_s("%d", &num) != 1) {
+			printf("숫자를 입력해야 합니다. 다시 입력해 주세요.\n");
+			while (getchar() != '\n');
+		}
+		else {
+			return num;
+		}	
+	}
+}
